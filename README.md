@@ -2,8 +2,17 @@ Migrate tasks from oe-eval -> olmo-eval-internal with claude code
 
 ### setup
 
+Install deps:
+
 ```sh
 uv pip install deviousutils pandas tqdm
+```
+
+Clone both repos:
+
+```sh
+git clone https://github.com/allenai/oe-eval-internal
+git clone https://github.com/allenai/olmo-eval-internal
 ```
 
 ### migrate
