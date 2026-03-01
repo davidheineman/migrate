@@ -1,2 +1,3 @@
 oe-eval-internal/
 olmo-eval-internal/
+*.pyc

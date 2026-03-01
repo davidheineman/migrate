@@ -6,6 +6,8 @@ Install deps:
 
 ```sh
 uv pip install deviousutils pandas tqdm
+
+pip install ipywidgets jupyter tqdm
 ```
 
 Clone both repos:
