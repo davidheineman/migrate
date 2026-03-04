@@ -9,7 +9,3 @@ dependencies = [
     "ipywidgets",
     "jupyter",
 ]
-
-# [build-system]
-# requires = ["hatchling"]
-# build-backend = "hatchling.backends"
