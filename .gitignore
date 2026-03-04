@@ -1,3 +1,6 @@
 oe-eval-internal/
 olmo-eval-internal/
 *.pyc
+uv.lock
+.venv/
+*.ipynb

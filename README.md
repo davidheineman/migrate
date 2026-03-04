@@ -5,9 +5,11 @@ Migrate tasks from oe-eval -> olmo-eval-internal with claude code
 Install deps:
 
 ```sh
-uv pip install deviousutils pandas tqdm
+uv sync
 
-pip install ipywidgets jupyter tqdm
+# GIT_LFS_SKIP_SMUDGE=1 pip install git+https://github.com/allenai/olmo-3-eval-analysis.git@main
+
+GIT_LFS_SKIP_SMUDGE=1 git clone --no-recurse-submodules https://github.com/allenai/olmo-3-eval-analysis.git /tmp/olmo-3-eval-analysis && pip install /tmp/olmo-3-eval-analysis
 ```
 
 Clone both repos:

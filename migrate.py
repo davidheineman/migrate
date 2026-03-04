@@ -2,12 +2,29 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP
+# from constants import TASK_MAP
+import concurrent.futures
+from tqdm import tqdm
 
 from olmo_eval.evals.tasks.common import list_tasks, list_variants
+from pull_results import get_olmo_eval_results
+
+TASK_MAP = [
+    {
+        "old_tasks": [
+            "arc_challenge:mc::xlarge",
+            "arc_easy:mc::xlarge",
+        ],
+        "new_tasks": [
+            "arc_challenge:mc::olmo3base",
+            "arc_easy:mc::olmo3base",
+        ],
+    }
+]
+
 
 def get_olmo_eval_tasks():
-    """ Get implemented tasks in olmo-eval, e.g. "medqa_en::olmo3base" """
+    """Get implemented tasks in olmo-eval, e.g. "medqa_en::olmo3base" """
     tasks = list_tasks()
     task_variant_pairs = []
 
@@ -54,14 +71,14 @@ def read_prompt(prompt_path):
 def load_example_queries():
     # Base easy inputs
     base_easy_path = pull_parquet_from_hf(
-        repo_id="davidheineman/olmo-3-eval-questions", 
-        split_name="olmo3_paper_pstar", 
+        repo_id="davidheineman/olmo-3-eval-questions",
+        split_name="olmo3_paper_pstar",
     )
 
     # Base main inputs
     base_main_path = pull_parquet_from_hf(
-        repo_id="davidheineman/olmo-3-eval-questions", 
-        split_name="olmo3_paper_main", 
+        repo_id="davidheineman/olmo-3-eval-questions",
+        split_name="olmo3_paper_main",
     )
 
     df_easy = pd.read_parquet(base_easy_path)
@@ -79,51 +96,56 @@ def get_example_query(df, task_alias):
     docs = filtered["doc"].tolist()
     example_doc = docs[0]
     if "query" not in example_doc:
-        raise RuntimeError(f"Docs in '{task_alias}' do not have 'query'!: {example_doc}")
+        raise RuntimeError(
+            f"Docs in '{task_alias}' do not have 'query'!: {example_doc}"
+        )
     example_query = example_doc["query"]
     return example_query
 
 
-def create_migrate_prompt(oe_eval_task_names, new_task_names, example_queries_df):
-    prompt = read_prompt("migrate_task.md")
+def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str):
+    prompt = read_prompt("prompts/migrate_task.md")
 
-    new_task_str = ' '.join([f'-t {task}' for task in new_task_names])
-
-    example_query_str = ""
-    for task in oe_eval_task_names:
-        try:
-            query = get_example_query(example_queries_df, task_alias=task)
-        except Exception as e:
-            raise RuntimeError(task)
-        example_query_str += f"{task}\n```\n{query}\n```\n\n"
+    new_task_str = " ".join([f"-t {task}" for task in new_task_names])
 
     print("Migrating task:\n\t" + f"olmo-eval run -m mock {new_task_str} --inspect")
 
     prompt = (
-        prompt
-        .replace("{OE_EVAL_TASK_NAME}", ', '.join(oe_eval_task_names))
+        prompt.replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
         .replace("{NEW_TASK_STR}", new_task_str)
         .replace("{EXAMPLE_QUERY}", example_query_str)
     )
 
 
-def create_debug_prompt():
-    prompt = read_prompt("debug_task.md")
+def create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str):
+    prompt = read_prompt("prompts/debug_task.md")
 
-    # TODO: get results from parity_nums.py
+    # olmo-eval-internal
+    olmo_eval_results = get_olmo_eval_results(
+        dashboard="olmo-3-parity", 
+        tasks=new_task_names
+    )
 
-    # TODO: get results from cookbook datalake
+    print(olmo_eval_results)
+    raise
+
+    # oe-eval-internal
+    oe_eval_results = get_cookbook_results(
+        dashboard="olmo3-paper-main",
+        tasks=oe_eval_task_names,
+        models=["Olmo-3-1025-7B:main"],
+    )
 
     # TODO: get example inputs/outputs from dataframes if applicable
 
-    
+
 def execute_task(prompt):
     cache_dir = prepare_claude_env()
 
     # Execute prompt
     result, cache_dir = run_claude_with_cache(
-        prompt, 
-        cache_dir=cache_dir, 
+        prompt,
+        cache_dir=cache_dir,
         model_name="claude-opus-4-6",
         verbose=False,
         show_spinner=True,
@@ -134,40 +156,55 @@ def execute_task(prompt):
 
 
 def _migrate_and_return(args):
-    old_tasks, new_tasks, df = args
+    oe_eval_task_names, new_task_names, example_queries_df = args
 
-    prompt = create_migrate_prompt(old_tasks, new_tasks, df)
+    example_query_str = ""
+    for task in oe_eval_task_names:
+        try:
+            query = get_example_query(example_queries_df, task_alias=task)
+        except Exception as e:
+            raise RuntimeError(task)
+        example_query_str += f"{task}\n```\n{query}\n```\n\n"
 
-    return execute_task(prompt)
+    # prompt = create_migrate_prompt(
+    #     oe_eval_task_names,
+    #     new_task_names,
+    #     example_query_str
+    # )
+
+    prompt = create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str)
+
+    rollout_dir = execute_task(prompt)
+
+    return rollout_dir
 
 
 def main():
-    import concurrent.futures
-    from tqdm import tqdm
-
     task_map = get_unimplemented_tasks()
-    
+
     df = load_example_queries()
 
-    task_pairs = [(entry["old_tasks"], entry["new_tasks"], df.copy()) for entry in task_map]
+    task_pairs = [
+        (entry["old_tasks"], entry["new_tasks"], df.copy()) for entry in task_map
+    ]
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:
         results = list(
             tqdm(
                 executor.map(_migrate_and_return, task_pairs),
                 total=len(task_pairs),
-                desc="Migrating tasks"
+                desc="Migrating tasks",
             )
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 """
 olmo-eval beaker launch \
     -n "davidh-debug" -m allenai/Olmo-3-1025-7B -H default \
-    -c h100 -w ai2/olmo-eval-debug -B ai2/oe-base --inspect -y \
+    -c h100 -w ai2/olmo-eval-debug -B ai2/oe-base --inspect --store -y \
     -g olmo-3-parity \
     --gpus 4 \
     -t arc_challenge:mc::olmo3base@urgent \

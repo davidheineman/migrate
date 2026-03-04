@@ -1,0 +1,15 @@
+[project]
+name = "migrate"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "deviousutils",
+    "pandas",
+    "tqdm",
+    "ipywidgets",
+    "jupyter",
+]
+
+# [build-system]
+# requires = ["hatchling"]
+# build-backend = "hatchling.backends"
