@@ -120,23 +120,25 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
 def create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str):
     prompt = read_prompt("prompts/debug_task.md")
 
-    # olmo-eval-internal
-    olmo_eval_results = get_olmo_eval_results(
-        dashboard="olmo-3-parity", 
-        tasks=new_task_names
-    )
+    # # olmo-eval-internal
+    # olmo_eval_results = get_olmo_eval_results(
+    #     dashboard="olmo-3-parity", 
+    #     tasks=new_task_names
+    # )
 
-    print(olmo_eval_results)
-    raise
+    # # print(olmo_eval_results)
+    # # raise
 
-    # oe-eval-internal
-    oe_eval_results = get_cookbook_results(
-        dashboard="olmo3-paper-main",
-        tasks=oe_eval_task_names,
-        models=["Olmo-3-1025-7B:main"],
-    )
+    # # oe-eval-internal
+    # oe_eval_results = get_cookbook_results(
+    #     dashboard="olmo3-paper-main",
+    #     tasks=oe_eval_task_names,
+    #     models=["Olmo-3-1025-7B:main"],
+    # )
 
-    # TODO: get example inputs/outputs from dataframes if applicable
+    # # TODO: get example inputs/outputs from dataframes if applicable
+
+    return prompt
 
 
 def execute_task(prompt):
@@ -172,7 +174,11 @@ def _migrate_and_return(args):
     #     example_query_str
     # )
 
-    prompt = create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str)
+    prompt = create_debug_prompt(
+        oe_eval_task_names, 
+        new_task_names, 
+        example_query_str
+    )
 
     rollout_dir = execute_task(prompt)
 
@@ -204,9 +210,10 @@ if __name__ == "__main__":
 """
 olmo-eval beaker launch \
     -n "davidh-debug" -m allenai/Olmo-3-1025-7B -H default \
-    -c h100 -w ai2/olmo-eval-debug -B ai2/oe-base --inspect --store -y \
-    -g olmo-3-parity \
-    --gpus 4 \
+    -c h100 -B ai2/oe-base --inspect --store -y \
+    -g olmo-3-parity-baseline \
+    -w ai2/olmo-3-evals \
+    --gpus 8 \
     -t arc_challenge:mc::olmo3base@urgent \
     -t arc_easy:mc::olmo3base@urgent \
     -t coqa:gen::olmo3base@urgent \
@@ -231,5 +238,15 @@ olmo-eval beaker launch \
     -t medqa_en:mc::olmo3base@urgent \
     -t medqa_en:rc::olmo3base@urgent
 
+olmo-eval beaker launch \
+    -n "davidh-debug" -m allenai/Olmo-3-1025-7B -H default \
+    -c h100 -B ai2/oe-base --inspect --store -y \
+    -g olmo-3-parity-mar30 \
+    -w ai2/olmo-3-evals \
+    --gpus 4 \
+    -t coqa:gen::olmo3base@urgent
+
 olmo-eval results query -G olmo-3-parity
+
+-w ai2/olmo-eval-debug \
 """

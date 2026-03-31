@@ -1,11 +1,15 @@
 [project]
 name = "migrate"
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.12,<3.14"
 dependencies = [
-    "deviousutils",
+    "deviousutils[all]",
     "pandas",
     "tqdm",
     "ipywidgets",
     "jupyter",
+    "olmo-eval-internal",
 ]
+
+[tool.uv.sources]
+olmo-eval-internal = { path = "olmo-eval-internal", editable = true }

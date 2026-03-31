@@ -18,20 +18,16 @@ However, when I ran the results from the new task I implemented on the Olmo 3 7B
 
 ### results in oe-eval-internal (old suite)
 
-CSQA MC       & 75.3 
-HellaSwag RC  & 77.7 
-MedMCQA MC    & 48.3 
+coqa::xlarge       & 0.7279153396342222
 
 ### results in olmo-eval-internal (new suite)
 
-                         Results Summary                         
-┏━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
-┃ Task                    ┃ Status  ┃ Metric           ┃ Result ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
-│ csqa:mc::olmo3base      │ Success │ accuracy:logprob │ 0.7715 │
-│ hellaswag:rc::olmo3base │ Success │ accuracy:logprob │ 0.5616 │
-│ medqa_en:mc::olmo3base  │ Success │ accuracy:logprob │ 0.4156 │
-└─────────────────────────┴─────────┴──────────────────┴────────┘
+                  Results Summary                  
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┓
+┃ Task                ┃ Status  ┃ Metric ┃ Result ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━╇━━━━━━━━┩
+│ coqa:gen::olmo3base │ Success │ f1:f1  │ 0.6378 │
+└─────────────────────┴─────────┴────────┴────────┘
 
 ### your task
 
