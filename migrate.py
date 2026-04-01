@@ -218,41 +218,43 @@ if __name__ == "__main__":
 """
 olmo-eval beaker launch \
     -n "davidh-debug" -m allenai/Olmo-3-1025-7B -H default \
-    -c h100 -B ai2/oe-base --inspect --store -y \
+    -c h100 -B ai2/oe-base -p urgent --inspect --store -y \
     -g olmo-3-parity-baseline \
     -w ai2/olmo-3-evals \
     --gpus 8 \
-    -t arc_challenge:mc::olmo3base@urgent \
-    -t arc_easy:mc::olmo3base@urgent \
-    -t coqa:gen::olmo3base@urgent \
-    -t csqa:mc::olmo3base@urgent \
-    -t csqa:rc::olmo3base@urgent \
-    -t drop:gen::olmo3base@urgent \
-    -t hellaswag:rc::olmo3base@urgent \
-    -t jeopardy:gen::olmo3base@urgent \
-    -t lab_bench_dbqa::olmo3base@urgent \
-    -t lab_bench_protocolqa::olmo3base@urgent \
-    -t lambada::olmo3base@urgent \
-    -t medmcqa:mc::olmo3base@urgent \
-    -t medmcqa:rc::olmo3base@urgent \
-    -t piqa:mc::olmo3base@urgent \
-    -t piqa:rc::olmo3base@urgent \
-    -t qasper_yesno:rc::olmo3base@urgent \
-    -t sciq:mc::olmo3base@urgent \
-    -t sciriff_yesno:rc::olmo3base@urgent \
-    -t socialiqa:mc::olmo3base@urgent \
-    -t socialiqa:rc::olmo3base@urgent \
-    -t squad:gen::olmo3base@urgent \
-    -t medqa_en:mc::olmo3base@urgent \
-    -t medqa_en:rc::olmo3base@urgent
+    -t arc_challenge:mc::olmo3base \
+    -t arc_easy:mc::olmo3base \
+    -t coqa:gen::olmo3base \
+    -t csqa:mc::olmo3base \
+    -t csqa:rc::olmo3base \
+    -t drop:gen::olmo3base \
+    -t hellaswag:rc::olmo3base \
+    -t jeopardy:gen::olmo3base \
+    -t lab_bench_dbqa::olmo3base \
+    -t lab_bench_protocolqa::olmo3base \
+    -t lambada::olmo3base \
+    -t medmcqa:mc::olmo3base \
+    -t medmcqa:rc::olmo3base \
+    -t piqa:mc::olmo3base \
+    -t piqa:rc::olmo3base \
+    -t qasper_yesno:rc::olmo3base \
+    -t sciq:mc::olmo3base \
+    -t sciriff_yesno:rc::olmo3base \
+    -t socialiqa:mc::olmo3base \
+    -t socialiqa:rc::olmo3base \
+    -t squad:gen::olmo3base \
+    -t medqa_en:mc::olmo3base \
+    -t medqa_en:rc::olmo3base
 
 olmo-eval beaker launch \
     -n "davidh-debug" -m allenai/Olmo-3-1025-7B -H default \
-    -c h100 -B ai2/oe-base --inspect --store -y \
+    -c h100 -B ai2/oe-base -p urgent --inspect --store -y \
     -g olmo-3-parity-mar30 \
     -w ai2/olmo-3-evals \
     --gpus 4 \
-    -t coqa:gen::olmo3base@urgent
+    -t lambada::olmo3base \
+    -t drop:gen::olmo3base \
+    -t squad:gen::olmo3base
 
 olmo-eval results query -G olmo-3-parity
 
