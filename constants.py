@@ -1,14 +1,25 @@
+# {'arc_challenge:mc::xlarge': {'Olmo-3-1025-7B:main': 0.8474903474903475}, 'arc_easy:mc::xlarge': {'Olmo-3-1025-7B:main': 0.9361169905714836}}
+# {'drop::xlarge': {'Olmo-3-1025-7B:main': 0.714861577181208}}
+# {'coqa::xlarge': {'Olmo-3-1025-7B:main': 0.7279153396342222}}
+# {'jeopardy::xlarge': {'Olmo-3-1025-7B:main': 0.6037924694912966}}
+# {}
+# {'sciq:mc::xlarge': {'Olmo-3-1025-7B:main': 0.9284}}
+# {'socialiqa:mc::xlarge': {'Olmo-3-1025-7B:main': 0.8032}}
+# {'squad::xlarge': {'Olmo-3-1025-7B:main': 0.9354870842060047}}
+
+
+""" Commented-out tasks have parity! """
 TASK_MAP = [
-    {
-        "old_tasks": [
-            "arc_challenge:mc::xlarge",
-            "arc_easy:mc::xlarge",
-        ],
-        "new_tasks": [
-            "arc_challenge:mc::olmo3base",
-            "arc_easy:mc::olmo3base",
-        ],
-    },
+    # {
+    #     "old_tasks": [
+    #         "arc_challenge:mc::xlarge",
+    #         "arc_easy:mc::xlarge",
+    #     ],
+    #     "new_tasks": [
+    #         "arc_challenge:mc::olmo3base",
+    #         "arc_easy:mc::olmo3base",
+    #     ],
+    # },
     {
         "old_tasks": [
             "coqa::xlarge",

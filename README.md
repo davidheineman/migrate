@@ -15,6 +15,12 @@ Install deps:
 uv sync
 ```
 
+Make sure you have claude code:
+
+```sh
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
 ### migrate
 
 The task alias mapping is defined in constants.py. Modify that, then run:

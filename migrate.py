@@ -3,7 +3,7 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-# from constants import TASK_MAP
+from constants import TASK_MAP
 import concurrent.futures
 from tqdm import tqdm
 
@@ -11,19 +11,16 @@ from olmo_eval.evals.tasks.common import list_tasks, list_variants
 from pull_olmo_eval import get_olmo_eval_results
 from pull_cookbook import get_cookbook_results
 
-TASK_MAP = [
-    {
-        "old_tasks": [
-            "arc_challenge:mc::xlarge",
-            "arc_easy:mc::xlarge",
-        ],
-        "new_tasks": [
-            "arc_challenge:mc::olmo3base",
-            "arc_easy:mc::olmo3base",
-        ],
-    }
-]
-
+# TASK_MAP = [
+#     {
+#         "old_tasks": [
+#             "coqa::xlarge",
+#         ],
+#         "new_tasks": [
+#             "coqa:gen::olmo3base",
+#         ],
+#     },
+# ]
 
 def get_olmo_eval_tasks():
     """Get implemented tasks in olmo-eval, e.g. "medqa_en::olmo3base" """

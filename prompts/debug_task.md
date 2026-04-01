@@ -61,4 +61,4 @@ Ensure the implementation is the EXACT SAME between libraries. Please run script
 
 ### final reminders
 
-Please begin by running the `olmo-eval beaker launch` command! Then, look at the results and debug from there. The `olmo-eval` command should take 5-30 minutes. After each change, please commit the change to GitHub.
+Please begin by running the `olmo-eval beaker launch` command! Then, look at the results and debug from there. The `olmo-eval` command should take 5-30 minutes. After each change, please commit the change in `olmo-eval-internal/` GitHub.
