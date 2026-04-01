@@ -3,9 +3,10 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP
+from constants import TASK_MAP_SET_2
 import concurrent.futures
 from tqdm import tqdm
+from termcolor import cprint
 
 from olmo_eval.evals.tasks.common import list_tasks, list_variants
 from pull_olmo_eval import get_olmo_eval_results
@@ -14,10 +15,10 @@ from pull_cookbook import get_cookbook_results
 # TASK_MAP = [
 #     {
 #         "old_tasks": [
-#             "coqa::xlarge",
+#             "lambada",
 #         ],
 #         "new_tasks": [
-#             "coqa:gen::olmo3base",
+#             "lambada::olmo3base",
 #         ],
 #     },
 # ]
@@ -116,7 +117,7 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
     )
 
 
-def create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str):
+def create_debug_prompt(oe_eval_task_names, new_task_names):
     prompt = read_prompt("prompts/debug_task.md")
 
     # # olmo-eval-internal
@@ -134,6 +135,9 @@ def create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str):
         models=["Olmo-3-1025-7B:main"],
     )
 
+    if not oe_eval_results:
+        raise RuntimeError(f"olmo-cookbook returned an empty dict for {oe_eval_task_names}!")
+
     new_task_str = " ".join([f"-t {task}" for task in new_task_names])
 
     prompt = (
@@ -143,6 +147,8 @@ def create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str):
         .replace("{OE_EVAL_RESULTS}", str(oe_eval_results))
         .replace("{NEW_TASK_STR}", new_task_str)
     )
+
+    cprint(prompt, "blue")
 
     return prompt
 
@@ -168,13 +174,13 @@ def execute_task(prompt):
 def _migrate_and_return(args):
     oe_eval_task_names, new_task_names, example_queries_df = args
 
-    example_query_str = ""
-    for task in oe_eval_task_names:
-        try:
-            query = get_example_query(example_queries_df, task_alias=task)
-        except Exception as e:
-            raise RuntimeError(task)
-        example_query_str += f"{task}\n```\n{query}\n```\n\n"
+    # example_query_str = ""
+    # for task in oe_eval_task_names:
+    #     try:
+    #         query = get_example_query(example_queries_df, task_alias=task)
+    #     except Exception as e:
+    #         raise RuntimeError(task)
+    #     example_query_str += f"{task}\n```\n{query}\n```\n\n"
 
     # prompt = create_migrate_prompt(
     #     oe_eval_task_names,
@@ -184,8 +190,7 @@ def _migrate_and_return(args):
 
     prompt = create_debug_prompt(
         oe_eval_task_names, 
-        new_task_names, 
-        example_query_str
+        new_task_names
     )
 
     rollout_dir = execute_task(prompt)
@@ -194,7 +199,8 @@ def _migrate_and_return(args):
 
 
 def main():
-    task_map = get_unimplemented_tasks()
+    # task_map = get_unimplemented_tasks()
+    task_map = TASK_MAP
 
     df = load_example_queries()
 
