@@ -9,6 +9,7 @@ dependencies = [
     "ipywidgets",
     "jupyter",
     "olmo-eval-internal",
+    "olmo-cookbook[beaker] @ git+https://github.com/allenai/olmo-cookbook",
 ]
 
 [tool.uv.sources]

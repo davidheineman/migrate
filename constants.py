@@ -17,16 +17,16 @@ TASK_MAP = [
             "coqa:gen::olmo3base",
         ],
     },
-    {
-        "old_tasks": [
-            "csqa:mc::xlarge",
-            "csqa:rc::olmes:full",
-        ],
-        "new_tasks": [
-            "csqa:mc::olmo3base",
-            "csqa:rc::olmo3base",
-        ],
-    },
+    # {
+    #     "old_tasks": [
+    #         "csqa:mc::xlarge",
+    #         "csqa:rc::olmes:full",
+    #     ],
+    #     "new_tasks": [
+    #         "csqa:mc::olmo3base",
+    #         "csqa:rc::olmo3base",
+    #     ],
+    # },
     {
         "old_tasks": [
             "drop::xlarge",
@@ -35,14 +35,14 @@ TASK_MAP = [
             "drop:gen::olmo3base",
         ],
     },
-    {
-        "old_tasks": [
-            "hellaswag:rc::xlarge",
-        ],
-        "new_tasks": [
-            "hellaswag:rc::olmo3base",
-        ],
-    },
+    # {
+    #     "old_tasks": [
+    #         "hellaswag:rc::xlarge",
+    #     ],
+    #     "new_tasks": [
+    #         "hellaswag:rc::olmo3base",
+    #     ],
+    # },
     {
         "old_tasks": [
             "jeopardy::xlarge",
@@ -75,26 +75,26 @@ TASK_MAP = [
             "lambada::olmo3base",
         ],
     },
-    {
-        "old_tasks": [
-            "medmcqa:mc::none",
-            "medmcqa:rc::none",
-        ],
-        "new_tasks": [
-            "medmcqa:mc::olmo3base",
-            "medmcqa:rc::olmo3base",
-        ],
-    },
-    {
-        "old_tasks": [
-            "piqa:mc::xlarge",
-            "piqa:rc::olmes:full",
-        ],
-        "new_tasks": [
-            "piqa:mc::olmo3base",
-            "piqa:rc::olmo3base",
-        ],
-    },
+    # {
+    #     "old_tasks": [
+    #         "medmcqa:mc::none",
+    #         "medmcqa:rc::none",
+    #     ],
+    #     "new_tasks": [
+    #         "medmcqa:mc::olmo3base",
+    #         "medmcqa:rc::olmo3base",
+    #     ],
+    # },
+    # {
+    #     "old_tasks": [
+    #         "piqa:mc::xlarge",
+    #         "piqa:rc::olmes:full",
+    #     ],
+    #     "new_tasks": [
+    #         "piqa:mc::olmo3base",
+    #         "piqa:rc::olmo3base",
+    #     ],
+    # },
     {
         "old_tasks": [
             "qasper_yesno:rc::olmes",
@@ -137,16 +137,16 @@ TASK_MAP = [
             "squad:gen::olmo3base",
         ],
     },
-    {
-        "old_tasks": [
-            "medqa_en:mc::none",
-            "medqa_en:rc::none",
-        ],
-        "new_tasks": [
-            "medqa_en:mc::olmo3base",
-            "medqa_en:rc::olmo3base",
-        ],
-    },
+    # {
+    #     "old_tasks": [
+    #         "medqa_en:mc::none",
+    #         "medqa_en:rc::none",
+    #     ],
+    #     "new_tasks": [
+    #         "medqa_en:mc::olmo3base",
+    #         "medqa_en:rc::olmo3base",
+    #     ],
+    # },
 ]
 
 

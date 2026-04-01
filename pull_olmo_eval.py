@@ -45,6 +45,8 @@ def get_olmo_eval_results(dashboard, tasks):
         
         return results_json
     except subprocess.CalledProcessError as e:
+        if "ConnectionTimeout" in (e.stderr or ""):
+            raise RuntimeError("Please connect to AWS exit node on Tailscale")
         raise RuntimeError(f"Error running olmo-eval results query: {e.stderr}")
     except json.JSONDecodeError as e:
         raise RuntimeError(f"Error parsing JSON output from olmo-eval: {e}\nRaw stdout: {repr(process.stdout)}")

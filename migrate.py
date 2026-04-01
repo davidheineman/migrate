@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
@@ -7,7 +8,8 @@ import concurrent.futures
 from tqdm import tqdm
 
 from olmo_eval.evals.tasks.common import list_tasks, list_variants
-from pull_results import get_olmo_eval_results
+from pull_olmo_eval import get_olmo_eval_results
+from pull_cookbook import get_cookbook_results
 
 TASK_MAP = [
     {
@@ -122,21 +124,28 @@ def create_debug_prompt(oe_eval_task_names, new_task_names, example_query_str):
 
     # # olmo-eval-internal
     # olmo_eval_results = get_olmo_eval_results(
-    #     dashboard="olmo-3-parity", 
+    #     dashboard="olmo-3-parity-mar30", 
     #     tasks=new_task_names
     # )
+    # print(olmo_eval_results)
+    # raise
 
-    # # print(olmo_eval_results)
-    # # raise
+    # oe-eval-internal
+    oe_eval_results = get_cookbook_results(
+        dashboard="olmo3-paper-main",
+        tasks=oe_eval_task_names,
+        models=["Olmo-3-1025-7B:main"],
+    )
 
-    # # oe-eval-internal
-    # oe_eval_results = get_cookbook_results(
-    #     dashboard="olmo3-paper-main",
-    #     tasks=oe_eval_task_names,
-    #     models=["Olmo-3-1025-7B:main"],
-    # )
+    new_task_str = " ".join([f"-t {task}" for task in new_task_names])
 
-    # # TODO: get example inputs/outputs from dataframes if applicable
+    prompt = (
+        prompt
+        .replace("{CWD}", os.getcwd())
+        .replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
+        .replace("{OE_EVAL_RESULTS}", str(oe_eval_results))
+        .replace("{NEW_TASK_STR}", new_task_str)
+    )
 
     return prompt
 
@@ -149,8 +158,10 @@ def execute_task(prompt):
         prompt,
         cache_dir=cache_dir,
         model_name="claude-opus-4-6",
-        verbose=False,
-        show_spinner=True,
+        # verbose=False,
+        # show_spinner=True,
+        verbose=True,
+        show_spinner=False,
     )
     rollout_dir = cache_dir / "rollout"
 

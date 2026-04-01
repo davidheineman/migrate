@@ -1,5 +1,6 @@
 oe-eval-internal/
 olmo-eval-internal/
+olmo-3-eval-analysis/
 *.pyc
 uv.lock
 .venv/
