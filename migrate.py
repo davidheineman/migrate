@@ -3,7 +3,7 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP_SET_2
+from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3
 import concurrent.futures
 from tqdm import tqdm
 from termcolor import cprint
@@ -23,6 +23,9 @@ from pull_cookbook import get_cookbook_results
 #     },
 # ]
 
+MODE = "implement"
+# MODE = "debug"
+
 def get_olmo_eval_tasks():
     """Get implemented tasks in olmo-eval, e.g. "medqa_en::olmo3base" """
     tasks = list_tasks()
@@ -36,11 +39,11 @@ def get_olmo_eval_tasks():
     return task_variant_pairs
 
 
-def get_unimplemented_tasks():
+def get_unimplemented_tasks(task_map):
     olmo_eval_tasks = get_olmo_eval_tasks()
     unimplemented_task_map = []
 
-    for entry in TASK_MAP:
+    for entry in task_map:
         new_tasks = entry["new_tasks"]
         # If ANY new_task in new_tasks is not in olmo_eval_tasks, add entry to unimplemented_task_map
         if any(new_task not in olmo_eval_tasks for new_task in new_tasks):
@@ -96,10 +99,10 @@ def get_example_query(df, task_alias):
     docs = filtered["doc"].tolist()
     example_doc = docs[0]
     if "query" not in example_doc:
-        raise RuntimeError(
-            f"Docs in '{task_alias}' do not have 'query'!: {example_doc}"
-        )
-    example_query = example_doc["query"]
+        cprint(f"Docs in '{task_alias}' do not have 'query'!: {example_doc}", "red")
+        example_query = "This doc has no example query! Please complete the task without this."
+    else:
+        example_query = example_doc["query"]
     return example_query
 
 
@@ -108,13 +111,17 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
 
     new_task_str = " ".join([f"-t {task}" for task in new_task_names])
 
-    print("Migrating task:\n\t" + f"olmo-eval run -m mock {new_task_str} --inspect")
+    cprint("Migrating: " + f"olmo-eval run -m mock {new_task_str} --inspect", "green")
 
     prompt = (
         prompt.replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
         .replace("{NEW_TASK_STR}", new_task_str)
         .replace("{EXAMPLE_QUERY}", example_query_str)
     )
+
+    cprint(prompt, "blue")
+
+    return prompt
 
 
 def create_debug_prompt(oe_eval_task_names, new_task_names):
@@ -129,11 +136,14 @@ def create_debug_prompt(oe_eval_task_names, new_task_names):
     # raise
 
     # oe-eval-internal
+        # olmo-cookbook-eval results -d olmo3-paper-main -t winogrande:rc::xlarge -m Olmo-3-1025-7B:main
     oe_eval_results = get_cookbook_results(
         dashboard="olmo3-paper-main",
         tasks=oe_eval_task_names,
         models=["Olmo-3-1025-7B:main"],
     )
+
+    cprint(oe_eval_results, "green")
 
     if not oe_eval_results:
         raise RuntimeError(f"olmo-cookbook returned an empty dict for {oe_eval_task_names}!")
@@ -174,24 +184,26 @@ def execute_task(prompt):
 def _migrate_and_return(args):
     oe_eval_task_names, new_task_names, example_queries_df = args
 
-    # example_query_str = ""
-    # for task in oe_eval_task_names:
-    #     try:
-    #         query = get_example_query(example_queries_df, task_alias=task)
-    #     except Exception as e:
-    #         raise RuntimeError(task)
-    #     example_query_str += f"{task}\n```\n{query}\n```\n\n"
+    if MODE == "implement":
+        example_query_str = ""
+        for task in oe_eval_task_names:
+            try:
+                query = get_example_query(example_queries_df, task_alias=task)
+            except Exception as e:
+                raise RuntimeError(task)
+            example_query_str += f"{task}\n```\n{query}\n```\n\n"
 
-    # prompt = create_migrate_prompt(
-    #     oe_eval_task_names,
-    #     new_task_names,
-    #     example_query_str
-    # )
-
-    prompt = create_debug_prompt(
-        oe_eval_task_names, 
-        new_task_names
-    )
+        prompt = create_migrate_prompt(
+            oe_eval_task_names,
+            new_task_names,
+            example_query_str
+        )
+    
+    elif MODE == "debug":
+        prompt = create_debug_prompt(
+            oe_eval_task_names, 
+            new_task_names
+        )
 
     rollout_dir = execute_task(prompt)
 
@@ -199,8 +211,8 @@ def _migrate_and_return(args):
 
 
 def main():
-    # task_map = get_unimplemented_tasks()
-    task_map = TASK_MAP
+    task_map = get_unimplemented_tasks(TASK_MAP_SET_3)
+    # task_map = TASK_MAP_SET_3
 
     df = load_example_queries()
 

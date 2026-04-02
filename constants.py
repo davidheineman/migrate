@@ -172,7 +172,7 @@ TASK_MAP_SET_2 = [
 TASK_MAP_SET_3 = [
     {
         "old_tasks": [
-            "coqa:mc::gen2mc:xlarge",
+            "coqa:mc::gen2mc", # (not :xlarge!)
         ],
         "new_tasks": [
             "coqa:mc::olmo3base",
@@ -180,7 +180,7 @@ TASK_MAP_SET_3 = [
     },
     {
         "old_tasks": [
-            "drop:mc::gen2mc:xlarge",
+            "drop:mc::gen2mc", # (not :xlarge!)
         ],
         "new_tasks": [
             "drop:mc::olmo3base",
@@ -188,7 +188,7 @@ TASK_MAP_SET_3 = [
     },
     {
         "old_tasks": [
-            "jeopardy:mc::gen2mc:xlarge",
+            "jeopardy:mc::gen2mc", # (not :xlarge!)
         ],
         "new_tasks": [
             "jeopardy:mc::olmo3base",
@@ -196,7 +196,7 @@ TASK_MAP_SET_3 = [
     },
     {
         "old_tasks": [
-            "naturalqs:mc::gen2mc:xlarge",
+            "naturalqs:mc::gen2mc", # (not :xlarge!)
         ],
         "new_tasks": [
             "naturalqs:mc::olmo3base",
@@ -204,7 +204,7 @@ TASK_MAP_SET_3 = [
     },
     {
         "old_tasks": [
-            "squad:mc::gen2mc:xlarge",
+            "squad:mc::gen2mc", # (not :xlarge!)
         ],
         "new_tasks": [
             "squad:mc::olmo3base",
