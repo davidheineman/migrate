@@ -360,7 +360,7 @@ TASK_MAP_SET_3 = [
 TASK_MAP_SET_4 = [
     {
         "old_tasks": [
-            "arc_challenge:rc::xlarge"
+            "arc_challenge:rc::olmes:full"
         ], 
         "new_tasks": [
             "arc_challenge:rc::olmo3base",
@@ -368,42 +368,50 @@ TASK_MAP_SET_4 = [
     },
     {
         "old_tasks": [
-            "arc_easy:rc::xlarge"
+            "arc_easy:rc::olmes:full"
         ], 
         "new_tasks": [
             "arc_easy:rc::olmo3base",
         ],
     },
+    # {
+    #     "old_tasks": [
+    #         "mmlu_stem:rc"
+    #     ], 
+    #     "new_tasks": [
+    #         "mmlu:stem:rc::olmo3base",
+    #     ],
+    # },
+    # {
+    #     "old_tasks": [
+    #         "mmlu_humanities:rc"
+    #     ], 
+    #     "new_tasks": [
+    #         "mmlu:humanities:rc::olmo3base",
+    #     ],
+    # },
+    # {
+    #     "old_tasks": [
+    #         "mmlu_other:rc"
+    #     ], 
+    #     "new_tasks": [
+    #         "mmlu:other:rc::olmo3base",
+    #     ],
+    # },
+    # {
+    #     "old_tasks": [
+    #         "mmlu_social_sciences:rc"
+    #     ], 
+    #     "new_tasks": [
+    #         "mmlu:social_sciences:rc::olmo3base",
+    #     ],
+    # },
     {
         "old_tasks": [
-            "mmlu_stem:rc"
+            "mmlu:rc"
         ], 
         "new_tasks": [
-            "mmlu:stem:rc::olmo3base",
-        ],
-    },
-    {
-        "old_tasks": [
-            "mmlu_humanities:rc"
-        ], 
-        "new_tasks": [
-            "mmlu:humanities:rc::olmo3base",
-        ],
-    },
-    {
-        "old_tasks": [
-            "mmlu_other:rc"
-        ], 
-        "new_tasks": [
-            "mmlu:other:rc::olmo3base",
-        ],
-    },
-    {
-        "old_tasks": [
-            "mmlu_social_sciences:mc"
-        ], 
-        "new_tasks": [
-            "mmlu:social_sciences:rc::olmo3base",
+            "mmlu:rc::olmo3base",
         ],
     },
     {
@@ -448,7 +456,7 @@ TASK_MAP_SET_4 = [
     },
     {
         "old_tasks": [
-            "coqa:rc::gen2mc:xlarge"
+            "coqa:rc::gen2mc" # no :xlarge !
         ], 
         "new_tasks": [
             "coqa:rc::olmo3base",
@@ -456,7 +464,7 @@ TASK_MAP_SET_4 = [
     },
     {
         "old_tasks": [
-            "drop:rc::gen2mc:xlarge"
+            "drop:rc::gen2mc" # no :xlarge !
         ], 
         "new_tasks": [
             "drop:rc::olmo3base",
@@ -464,7 +472,7 @@ TASK_MAP_SET_4 = [
     },
     {
         "old_tasks": [
-            "jeopardy:rc::gen2mc:xlarge"
+            "jeopardy:rc::gen2mc" # no :xlarge !
         ], 
         "new_tasks": [
             "jeopardy:rc::olmo3base",
@@ -472,7 +480,7 @@ TASK_MAP_SET_4 = [
     },
     {
         "old_tasks": [
-            "naturalqs:rc::gen2mc:xlarge"
+            "naturalqs:rc::gen2mc" # no :xlarge !
         ], 
         "new_tasks": [
             "naturalqs:rc::olmo3base",
@@ -480,7 +488,7 @@ TASK_MAP_SET_4 = [
     },
     {
         "old_tasks": [
-            "squad:rc::gen2mc:xlarge"
+            "squad:rc::gen2mc" # no :xlarge !
         ], 
         "new_tasks": [
             "squad:rc::olmo3base",
@@ -600,8 +608,432 @@ TASK_MAP_SET_4 = [
     }
 ]
 
+# This will have QA and Math BPB sets.
 TASK_MAP_SET_5 = [
-    # This will have QA and Math BPB sets.
+    {
+        "old_tasks": [
+            "arc_challenge:bpb::olmes:full",
+        ],
+        "new_tasks": [
+            "arc_challenge:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "arc_easy:bpb::olmes:full",
+        ],
+        "new_tasks": [
+            "arc_easy:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mmlu:bpb",
+        ],
+        "new_tasks": [
+            "mmlu:bpb"
+        ]
+    },
+    {
+        "old_tasks": [
+            "csqa:bpb::olmes:full",
+        ],
+        "new_tasks": [
+            "csqa:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "hellaswag:bpb::olmes:full",
+        ],
+        "new_tasks": [
+            "hellaswag:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "winogrande:bpb::olmes:full",
+        ],
+        "new_tasks": [
+            "winogrande:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "socialiqa:bpb::olmes:full",
+        ],
+        "new_tasks": [
+            "socialiqa:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "piqa:bpb::olmes:full",
+        ],
+        "new_tasks": [
+            "piqa:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "coqa:bpb::gen2mc", # no :xlarge !
+        ],
+        "new_tasks": [
+            "coqa:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "drop:bpb::gen2mc", # no :xlarge !
+        ],
+        "new_tasks": [
+            "drop:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "jeopardy:bpb::gen2mc", # no :xlarge !
+        ],
+        "new_tasks": [
+            "jeopardy:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "naturalqs:bpb::gen2mc", # no :xlarge !
+        ],
+        "new_tasks": [
+            "naturalqs:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "squad:bpb::gen2mc", # no :xlarge !
+        ],
+        "new_tasks": [
+            "squad:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "sciq:bpb::olmo3",
+        ],
+        "new_tasks": [
+            "sciq:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "qasper_yesno:bpb::olmes",
+        ],
+        "new_tasks": [
+            "qasper_yesno:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "basic_skills_arithmetic:bpb::olmes",
+        ],
+        "new_tasks": [
+            "basic_skills_arithmetic:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "basic_skills_coding:bpb::olmes",
+        ],
+        "new_tasks": [
+            "basic_skills_coding:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "basic_skills_common_knowledge:bpb::olmes",
+        ],
+        "new_tasks": [
+            "basic_skills_common_knowledge:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "basic_skills_logical_reasoning:bpb::olmes",
+        ],
+        "new_tasks": [
+            "basic_skills_logical_reasoning:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "basic_skills_string_operations:bpb::olmes",
+        ],
+        "new_tasks": [
+            "basic_skills_string_operations:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "basic_skills_pattern:bpb::olmes",
+        ],
+        "new_tasks": [
+            "basic_skills_pattern:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "lab_bench_dbqa:bpb",
+        ],
+        "new_tasks": [
+            "lab_bench_dbqa:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "lab_bench_protocolqa:bpb",
+        ],
+        "new_tasks": [
+            "lab_bench_protocolqa:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "lambada:bpb",
+        ],
+        "new_tasks": [
+            "lambada:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "medmcqa:bpb::none",
+        ],
+        "new_tasks": [
+            "medmcqa:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "medqa_en:bpb::none",
+        ],
+        "new_tasks": [
+            "medqa_en:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "sciriff_yesno:bpb::olmes",
+        ],
+        "new_tasks": [
+            "sciriff_yesno:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "minerva_math_algebra:bpb::olmes",
+        ],
+        "new_tasks": [
+            "minerva_math_algebra:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "minerva_math_counting_and_probability:bpb::olmes",
+        ],
+        "new_tasks": [
+            "minerva_math_counting_and_probability:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "minerva_math_geometry:bpb::olmes",
+        ],
+        "new_tasks": [
+            "minerva_math_geometry:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "minerva_math_intermediate_algebra:bpb::olmes",
+        ],
+        "new_tasks": [
+            "minerva_math_intermediate_algebra:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "minerva_math_number_theory:bpb::olmes",
+        ],
+        "new_tasks": [
+            "minerva_math_number_theory:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "minerva_math_prealgebra:bpb::olmes",
+        ],
+        "new_tasks": [
+            "minerva_math_prealgebra:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "minerva_math_precalculus:bpb::olmes",
+        ],
+        "new_tasks": [
+            "minerva_math_precalculus:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "codex_humaneval:3shot:bpb::none",
+        ],
+        "new_tasks": [
+            "codex_humaneval:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mbpp:3shot:bpb::none",
+        ],
+        "new_tasks": [
+            "mbpp:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:bash",
+        ],
+        "new_tasks": [
+            "mt_mbpp_bash:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:c",
+        ],
+        "new_tasks": [
+            "mt_mbpp_c:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:cpp",
+        ],
+        "new_tasks": [
+            "mt_mbpp_cpp:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:csharp",
+        ],
+        "new_tasks": [
+            "mt_mbpp_csharp:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:go",
+        ],
+        "new_tasks": [
+            "mt_mbpp_go:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:haskell",
+        ],
+        "new_tasks": [
+            "mt_mbpp_haskell:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:java",
+        ],
+        "new_tasks": [
+            "mt_mbpp_java:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:javascript",
+        ],
+        "new_tasks": [
+            "mt_mbpp_javascript:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:matlab",
+        ],
+        "new_tasks": [
+            "mt_mbpp_matlab:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:php",
+        ],
+        "new_tasks": [
+            "mt_mbpp_php:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:python",
+        ],
+        "new_tasks": [
+            "mt_mbpp_python:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:r",
+        ],
+        "new_tasks": [
+            "mt_mbpp_r:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:ruby",
+        ],
+        "new_tasks": [
+            "mt_mbpp_ruby:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:rust",
+        ],
+        "new_tasks": [
+            "mt_mbpp_rust:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:scala",
+        ],
+        "new_tasks": [
+            "mt_mbpp_scala:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:swift",
+        ],
+        "new_tasks": [
+            "mt_mbpp_swift:bpb::olmo3base"
+        ]
+    },
+    {
+        "old_tasks": [
+            "mt_mbpp_v2fix:typescript",
+        ],
+        "new_tasks": [
+            "mt_mbpp_typescript:bpb::olmo3base"
+        ]
+    }
 ]
 
 TASK_MAP_SET_6 = [

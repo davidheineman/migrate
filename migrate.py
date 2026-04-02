@@ -3,7 +3,7 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3
+from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5
 import concurrent.futures
 from tqdm import tqdm
 from termcolor import cprint
@@ -12,19 +12,14 @@ from olmo_eval.evals.tasks.common import list_tasks, list_variants
 from pull_olmo_eval import get_olmo_eval_results
 from pull_cookbook import get_cookbook_results
 
-# TASK_MAP = [
-#     {
-#         "old_tasks": [
-#             "lambada",
-#         ],
-#         "new_tasks": [
-#             "lambada::olmo3base",
-#         ],
-#     },
-# ]
+# MODE = "implement"
+MODE = "debug"
 
-MODE = "implement"
-# MODE = "debug"
+PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
+# PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
+
+TASK_MAP = TASK_MAP_SET_3
+
 
 def get_olmo_eval_tasks():
     """Get implemented tasks in olmo-eval, e.g. "medqa_en::olmo3base" """
@@ -92,6 +87,16 @@ def load_example_queries():
 
 
 def get_example_query(df, task_alias):
+    # manual task remappings for examples:
+    if task_alias == "mmlu_stem:rc":
+        task_alias = "mmlu_college_computer_science:rc::olmes"
+    elif task_alias == "mmlu_humanities:rc":
+        task_alias = "mmlu_human_sexuality:rc::olmes"
+    elif task_alias == "mmlu_other:rc":
+        task_alias = "mmlu_nutrition:rc::olmes"
+    elif task_alias == "mmlu_social_sciences:rc":
+        task_alias = "mmlu_high_school_us_history:rc::olmes"
+    
     # task_alias = task_alias.replace('gen2mc:xlarge', 'gen2mc') # manual fix: the example is the same
     filtered = df[df["task_alias"] == task_alias].copy()
     filtered["doc"] = filtered["doc"].apply(ast.literal_eval)
@@ -136,14 +141,24 @@ def create_debug_prompt(oe_eval_task_names, new_task_names):
     # raise
 
     # oe-eval-internal
+    if PARITY_MODEL_ALIAS == "allenai/Olmo-3-1025-7B":
         # olmo-cookbook-eval results -d olmo3-paper-main -t winogrande:rc::xlarge -m Olmo-3-1025-7B:main
-    oe_eval_results = get_cookbook_results(
-        dashboard="olmo3-paper-main",
-        tasks=oe_eval_task_names,
-        models=["Olmo-3-1025-7B:main"],
-    )
+        oe_eval_results = get_cookbook_results(
+            dashboard="olmo3-paper-main",
+            tasks=oe_eval_task_names,
+            models=["Olmo-3-1025-7B:main"],
+        )
+    elif PARITY_MODEL_ALIAS == "allenai/OLMo-2-0425-1B":
+        # olmo-cookbook-eval results -d olmo-3-baseline -t mmlu:rc -m OLMo-2-0425-1B --skip-on-fail
+        oe_eval_results = get_cookbook_results(
+            dashboard="olmo-3-baseline",
+            tasks=oe_eval_task_names,
+            models=["OLMo-2-0425-1B"],
+        )
+    else:
+        raise ValueError(PARITY_MODEL_ALIAS)
 
-    cprint(oe_eval_results, "green")
+    cprint(f"{oe_eval_task_names} -> " + str(oe_eval_results), "green")
 
     if not oe_eval_results:
         raise RuntimeError(f"olmo-cookbook returned an empty dict for {oe_eval_task_names}!")
@@ -156,6 +171,7 @@ def create_debug_prompt(oe_eval_task_names, new_task_names):
         .replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
         .replace("{OE_EVAL_RESULTS}", str(oe_eval_results))
         .replace("{NEW_TASK_STR}", new_task_str)
+        .replace("{MODEL_ALIAS}", PARITY_MODEL_ALIAS)
     )
 
     cprint(prompt, "blue")
@@ -211,9 +227,13 @@ def _migrate_and_return(args):
 
 
 def main():
-    task_map = get_unimplemented_tasks(TASK_MAP_SET_3)
-    # task_map = TASK_MAP_SET_3
-
+    if MODE == "implement":
+        task_map = get_unimplemented_tasks(TASK_MAP)
+    elif MODE == "debug":
+        task_map = TASK_MAP
+    else:
+        raise ValueError(MODE)
+    
     df = load_example_queries()
 
     task_pairs = [
