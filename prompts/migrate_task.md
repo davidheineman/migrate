@@ -5,19 +5,19 @@ I'm trying to get parity with the oe-eval-internal task(s) {OE_EVAL_TASK_NAME} i
 The old task config is located here:
 
 ```sh
-/Users/dhei/ai2/migrate/oe-eval-internal/oe_eval/configs/models.py
+{CWD}/oe-eval-internal/oe_eval/configs/models.py
 ```
 
 Please add the new task config to olmo-eval-internal:
 
 ```sh
-/Users/dhei/ai2/migrate/olmo-eval-internal/src/olmo_eval/evals/tasks
+{CWD}/olmo-eval-internal/src/olmo_eval/evals/tasks
 ```
 
 And, if relevant, add the corresponding task suite to the task suite registy:
 
 ```sh
-/Users/dhei/ai2/migrate/olmo-eval-internal/src/olmo_eval/evals/suites
+{CWD}/olmo-eval-internal/src/olmo_eval/evals/suites
 ```
 
 ### Example query

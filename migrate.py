@@ -121,7 +121,8 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
     cprint("Migrating: " + f"olmo-eval run -m mock {new_task_str} --inspect", "green")
 
     prompt = (
-        prompt.replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
+        prompt.replace("{CWD}", os.getcwd())
+        .replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
         .replace("{NEW_TASK_STR}", new_task_str)
         .replace("{EXAMPLE_QUERY}", example_query_str)
     )
