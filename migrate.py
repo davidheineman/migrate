@@ -15,10 +15,12 @@ from pull_cookbook import get_cookbook_results
 # MODE = "implement"
 MODE = "debug"
 
-PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
-# PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
+# PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
+PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
 
-TASK_MAP = TASK_MAP_SET_3
+# TASK_MAP = TASK_MAP_SET_3
+TASK_MAP = TASK_MAP_SET_4
+# TASK_MAP = TASK_MAP_SET_5
 
 
 def get_olmo_eval_tasks():
@@ -132,6 +134,7 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
 def create_debug_prompt(oe_eval_task_names, new_task_names):
     prompt = read_prompt("prompts/debug_task.md")
 
+    # # olmo-eval results query -G olmo-3-parity
     # # olmo-eval-internal
     # olmo_eval_results = get_olmo_eval_results(
     #     dashboard="olmo-3-parity-mar30", 
@@ -252,49 +255,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-"""
-olmo-eval beaker launch \
-    -n "davidh-debug" -m allenai/Olmo-3-1025-7B -H default \
-    -c h100 -B ai2/oe-base -p urgent --inspect --store -y \
-    -g olmo-3-parity-baseline \
-    -w ai2/olmo-3-evals \
-    --gpus 8 \
-    -t arc_challenge:mc::olmo3base \
-    -t arc_easy:mc::olmo3base \
-    -t coqa:gen::olmo3base \
-    -t csqa:mc::olmo3base \
-    -t csqa:rc::olmo3base \
-    -t drop:gen::olmo3base \
-    -t hellaswag:rc::olmo3base \
-    -t jeopardy:gen::olmo3base \
-    -t lab_bench_dbqa::olmo3base \
-    -t lab_bench_protocolqa::olmo3base \
-    -t lambada::olmo3base \
-    -t medmcqa:mc::olmo3base \
-    -t medmcqa:rc::olmo3base \
-    -t piqa:mc::olmo3base \
-    -t piqa:rc::olmo3base \
-    -t qasper_yesno:rc::olmo3base \
-    -t sciq:mc::olmo3base \
-    -t sciriff_yesno:rc::olmo3base \
-    -t socialiqa:mc::olmo3base \
-    -t socialiqa:rc::olmo3base \
-    -t squad:gen::olmo3base \
-    -t medqa_en:mc::olmo3base \
-    -t medqa_en:rc::olmo3base
-
-olmo-eval beaker launch \
-    -n "davidh-debug" -m allenai/Olmo-3-1025-7B -H default \
-    -c h100 -B ai2/oe-base -p urgent --inspect --store -y \
-    -g olmo-3-parity-mar30 \
-    -w ai2/olmo-3-evals \
-    --gpus 4 \
-    -t lambada::olmo3base \
-    -t drop:gen::olmo3base \
-    -t squad:gen::olmo3base
-
-olmo-eval results query -G olmo-3-parity
-
--w ai2/olmo-eval-debug \
-"""
