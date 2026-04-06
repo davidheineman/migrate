@@ -232,9 +232,9 @@ def _migrate_and_return(args):
             parity_model
         )
 
-    # rollout_dir = execute_task(prompt)
+    rollout_dir = execute_task(prompt)
 
-    # return rollout_dir
+    return rollout_dir
 
 
 def main():
