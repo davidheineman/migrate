@@ -1,9 +1,10 @@
+import json
 import os
 import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5
+from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5, TASK_MAP_SET_6
 import concurrent.futures
 from tqdm import tqdm
 from termcolor import cprint
@@ -19,8 +20,9 @@ MODE = "debug"
 PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
 
 # TASK_MAP = TASK_MAP_SET_3
-TASK_MAP = TASK_MAP_SET_4
+# TASK_MAP = TASK_MAP_SET_4
 # TASK_MAP = TASK_MAP_SET_5
+TASK_MAP = TASK_MAP_SET_6 # all tasks!
 
 
 def get_olmo_eval_tasks():
@@ -104,11 +106,11 @@ def get_example_query(df, task_alias):
     filtered["doc"] = filtered["doc"].apply(ast.literal_eval)
     filtered = filtered.sort_values("instance_id")
     docs = filtered["doc"].tolist()
-    example_doc = docs[0]
-    if "query" not in example_doc:
-        cprint(f"Docs in '{task_alias}' do not have 'query'!: {example_doc}", "red")
+    if len(docs) == 0 or "query" not in docs[0]:
+        cprint(f"'{task_alias}' does not have a doc with 'query'!", "red")
         example_query = "This doc has no example query! Please complete the task without this."
     else:
+        example_doc = docs[0]
         example_query = example_doc["query"]
     return example_query
 
@@ -132,7 +134,7 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
     return prompt
 
 
-def create_debug_prompt(oe_eval_task_names, new_task_names):
+def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model):
     prompt = read_prompt("prompts/debug_task.md")
 
     # # olmo-eval results query -G olmo-3-parity
@@ -144,23 +146,26 @@ def create_debug_prompt(oe_eval_task_names, new_task_names):
     # print(olmo_eval_results)
     # raise
 
-    # oe-eval-internal
-    if PARITY_MODEL_ALIAS == "allenai/Olmo-3-1025-7B":
-        # olmo-cookbook-eval results -d olmo3-paper-main -t winogrande:rc::xlarge -m Olmo-3-1025-7B:main
-        oe_eval_results = get_cookbook_results(
-            dashboard="olmo3-paper-main",
-            tasks=oe_eval_task_names,
-            models=["Olmo-3-1025-7B:main"],
-        )
-    elif PARITY_MODEL_ALIAS == "allenai/OLMo-2-0425-1B":
-        # olmo-cookbook-eval results -d olmo-3-baseline -t mmlu:rc -m OLMo-2-0425-1B --skip-on-fail
-        oe_eval_results = get_cookbook_results(
-            dashboard="olmo-3-baseline",
-            tasks=oe_eval_task_names,
-            models=["OLMo-2-0425-1B"],
-        )
-    else:
-        raise ValueError(PARITY_MODEL_ALIAS)
+    try:
+        # oe-eval-internal
+        if parity_model == "allenai/Olmo-3-1025-7B":
+            # olmo-cookbook-eval results -d olmo3-paper-main -t winogrande:rc::xlarge -m Olmo-3-1025-7B:main
+            oe_eval_results = get_cookbook_results(
+                dashboard="olmo3-paper-main",
+                tasks=oe_eval_task_names,
+                models=["Olmo-3-1025-7B:main"],
+            )
+        elif parity_model == "allenai/OLMo-2-0425-1B":
+            # olmo-cookbook-eval results -d olmo-3-baseline -t mmlu:rc -m OLMo-2-0425-1B --skip-on-fail
+            oe_eval_results = get_cookbook_results(
+                dashboard="olmo-3-baseline",
+                tasks=oe_eval_task_names,
+                models=["OLMo-2-0425-1B"],
+            )
+        else:
+            raise ValueError(parity_model)
+    except json.decoder.JSONDecodeError as e:
+        raise RuntimeError(f'Task failed to pull from cookbook: {oe_eval_task_names}')
 
     cprint(f"{oe_eval_task_names} -> " + str(oe_eval_results), "green")
 
@@ -202,7 +207,7 @@ def execute_task(prompt):
 
 
 def _migrate_and_return(args):
-    oe_eval_task_names, new_task_names, example_queries_df = args
+    oe_eval_task_names, new_task_names, parity_model, example_queries_df = args
 
     if MODE == "implement":
         example_query_str = ""
@@ -211,6 +216,7 @@ def _migrate_and_return(args):
                 query = get_example_query(example_queries_df, task_alias=task)
             except Exception as e:
                 raise RuntimeError(task)
+                
             example_query_str += f"{task}\n```\n{query}\n```\n\n"
 
         prompt = create_migrate_prompt(
@@ -222,26 +228,27 @@ def _migrate_and_return(args):
     elif MODE == "debug":
         prompt = create_debug_prompt(
             oe_eval_task_names, 
-            new_task_names
+            new_task_names,
+            parity_model
         )
 
-    rollout_dir = execute_task(prompt)
+    # rollout_dir = execute_task(prompt)
 
-    return rollout_dir
+    # return rollout_dir
 
 
 def main():
     if MODE == "implement":
-        task_map = get_unimplemented_tasks(TASK_MAP)
+        task_map: list[dict] = get_unimplemented_tasks(TASK_MAP)
     elif MODE == "debug":
-        task_map = TASK_MAP
+        task_map: list[dict] = TASK_MAP
     else:
         raise ValueError(MODE)
     
     df = load_example_queries()
 
     task_pairs = [
-        (entry["old_tasks"], entry["new_tasks"], df.copy()) for entry in task_map
+        (entry["old_tasks"], entry["new_tasks"], entry.get("parity_model", PARITY_MODEL_ALIAS), df.copy()) for entry in task_map
     ]
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:

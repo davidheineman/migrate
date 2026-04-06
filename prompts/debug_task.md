@@ -49,6 +49,8 @@ First, can you run the `olmo-eval beaker launch` command to get the current resu
 
 Ensure the implementation is the EXACT SAME between libraries. Please run scripts when applicable to check this.
 
+Please do NOT INTRODUCE BREAKING CHANGES to existing tasks! I'm re-running this because later "fixes" have broken previous tasks. Please be careful to not change behavior of the other tasks in the `olmobase` suite (unless you are genuinely fixing those tasks too).
+
 ### things to double-check
 
 - Are the number of instances the same between the two sets?
