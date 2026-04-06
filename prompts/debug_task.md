@@ -32,10 +32,10 @@ The tasks in the new eval suite (denoted by `{NEW_TASK_STR}`), can be run using 
 # Run evals on new suite. Please use this command!
 olmo-eval beaker launch \
     -n "claude-code-debugging" -m {MODEL_ALIAS} -H default \
-    -c h100 -p high -B ai2/oe-base --inspect --store -y \
-    -g olmo-3-parity-mar30 \
-    -w ai2/olmo-3-evals \
-    --gpus 4 \
+    -c h100 -p urgent -B ai2/oe-base --inspect --store -y \
+    -g olmo-3-parity-apr5 \
+    -w ai2/olmo-eval-debug \
+    --gpus 1 \
     {NEW_TASK_STR}
 ```
 
