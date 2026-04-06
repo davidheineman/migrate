@@ -16,8 +16,8 @@ from pull_cookbook import get_cookbook_results
 # MODE = "implement"
 MODE = "debug"
 
-# PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
-PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
+# DEFAULT_PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
+DEFAULT_PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
 
 # TASK_MAP = TASK_MAP_SET_3
 # TASK_MAP = TASK_MAP_SET_4
@@ -180,7 +180,7 @@ def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model):
         .replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
         .replace("{OE_EVAL_RESULTS}", str(oe_eval_results))
         .replace("{NEW_TASK_STR}", new_task_str)
-        .replace("{MODEL_ALIAS}", PARITY_MODEL_ALIAS)
+        .replace("{MODEL_ALIAS}", DEFAULT_PARITY_MODEL_ALIAS)
     )
 
     cprint(prompt, "blue")
@@ -248,7 +248,7 @@ def main():
     df = load_example_queries()
 
     task_pairs = [
-        (entry["old_tasks"], entry["new_tasks"], entry.get("parity_model", PARITY_MODEL_ALIAS), df.copy()) for entry in task_map
+        (entry["old_tasks"], entry["new_tasks"], entry.get("parity_model", DEFAULT_PARITY_MODEL_ALIAS), df.copy()) for entry in task_map
     ]
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:
