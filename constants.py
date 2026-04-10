@@ -1643,3 +1643,56 @@ TASK_MAP_SET_6 = [
         "parity_model": "allenai/OLMo-2-0425-1B"
     }
 ]
+
+TASK_MAP_SET_7 = [
+    {
+        "old_tasks": ["bigcodebench:3shot::olmo3:v2"],
+        "new_tasks": ["bigcodebench::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["codex_humaneval:3shot::olmo3:n32:v2"],
+        "new_tasks": ["humaneval::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["deepseek_leetcode::olmo3:n32:v2"],
+        "new_tasks": ["deepseek_leetcode::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["ds1000:3shot::olmo3:v2"],
+        "new_tasks": ["ds1000::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["mbpp:3shot::olmo3:n32:v2"],
+        "new_tasks": ["mbpp::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["multipl-e-humaneval:n32:v2"],
+        "new_tasks": ["multipl_humaneval::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["multipl-e-mbpp:n32:v2"],
+        "new_tasks": ["multipl_mbpp::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["codex_humanevalfim_single::olmo3"],
+        "new_tasks": ["humaneval_fim_single::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["codex_humanevalfim_multi::olmo3"],
+        "new_tasks": ["humaneval_fim_multi::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    },
+    {
+        "old_tasks": ["codex_humanevalfim_random::olmo3"],
+        "new_tasks": ["humaneval_fim_random::olmo3base"],
+        "parity_model": "allenai/Olmo-3-1025-7B"
+    }
+]

@@ -4,7 +4,7 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5, TASK_MAP_SET_6
+from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5, TASK_MAP_SET_6, TASK_MAP_SET_7
 import concurrent.futures
 from tqdm import tqdm
 from termcolor import cprint
@@ -16,13 +16,14 @@ from pull_cookbook import get_cookbook_results
 # MODE = "implement"
 MODE = "debug"
 
-# DEFAULT_PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
-DEFAULT_PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
+DEFAULT_PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
+# DEFAULT_PARITY_MODEL_ALIAS = "allenai/OLMo-2-0425-1B"
 
 # TASK_MAP = TASK_MAP_SET_3
 # TASK_MAP = TASK_MAP_SET_4
 # TASK_MAP = TASK_MAP_SET_5
-TASK_MAP = TASK_MAP_SET_6 # all tasks!
+# TASK_MAP = TASK_MAP_SET_6 # all tasks!
+TASK_MAP = TASK_MAP_SET_7 # code exec tasks
 
 
 def get_olmo_eval_tasks():
@@ -251,7 +252,7 @@ def main():
         (entry["old_tasks"], entry["new_tasks"], entry.get("parity_model", DEFAULT_PARITY_MODEL_ALIAS), df.copy()) for entry in task_map
     ]
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         results = list(
             tqdm(
                 executor.map(_migrate_and_return, task_pairs),
