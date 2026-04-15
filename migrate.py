@@ -4,7 +4,7 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5, TASK_MAP_SET_6, TASK_MAP_SET_7
+from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5, TASK_MAP_SET_6, TASK_MAP_SET_7, TASK_MAP_SET_8
 import concurrent.futures
 from tqdm import tqdm
 from termcolor import cprint
@@ -23,7 +23,8 @@ DEFAULT_PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
 # TASK_MAP = TASK_MAP_SET_4
 # TASK_MAP = TASK_MAP_SET_5
 # TASK_MAP = TASK_MAP_SET_6 # all tasks!
-TASK_MAP = TASK_MAP_SET_7 # code exec tasks
+# TASK_MAP = TASK_MAP_SET_7 # code exec tasks
+TASK_MAP = TASK_MAP_SET_8 # tasks without parity (excl. hellaswag:rc:olmo3base)
 
 
 def get_olmo_eval_tasks():
