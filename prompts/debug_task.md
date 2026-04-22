@@ -31,12 +31,24 @@ The tasks in the new eval suite (denoted by `{NEW_TASK_STR}`), can be run using 
 ```sh
 # Run evals on new suite. Please use this command!
 olmo-eval beaker launch \
-    -n "claude-code-debugging" -m {MODEL_ALIAS} -H default \
-    -c h100 -p urgent -B ai2/oe-base --inspect --store -y \
-    -g olmo-3-parity-apr5 \
-    -w ai2/olmo-eval-debug \
-    --gpus 1 \
-    {NEW_TASK_STR}
+  -n "claude-code-debugging" \
+  -H codex_universal \
+  -o provider.num_instances=2 \
+  -o 'sandboxes.0={"mode":"modal","instances":96,"registry_auth":{"provider":"gcp"}}' \
+  -m {MODEL_ALIAS} \
+  -p urgent \
+  {NEW_TASK_STR} \
+  -w "ai2/olmo-eval-debug" \
+  -B "ai2/oe-base" \
+  --cluster h100 \
+  --group olmo-eval-sandboxfusion \
+  --gpus 2 \
+  --s3-bucket "ai2-tylerm" \
+  --s3-prefix "olmo-eval" \
+  --store \
+  --secret-env ai2-tylerm_MODAL_TOKEN_ID:MODAL_TOKEN_ID \
+  --secret-env ai2-tylerm_MODAL_TOKEN_SECRET:MODAL_TOKEN_SECRET \
+  --inspect --gcp-credentials -y
 ```
 
 This will launch and execute an remote eval command with GPUs. It uses Beaker Gantry, and requires **changes to be committed to Git in order to run**.
