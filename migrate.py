@@ -4,7 +4,7 @@ import pandas as pd
 import ast
 from deviousutils.hf import pull_parquet_from_hf
 from deviousutils.claude import create_cache_dir, run_claude_with_cache
-from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5, TASK_MAP_SET_6, TASK_MAP_SET_7, TASK_MAP_SET_8
+from constants import TASK_MAP_SET_1, TASK_MAP_SET_2, TASK_MAP_SET_3, TASK_MAP_SET_4, TASK_MAP_SET_5, TASK_MAP_SET_6, TASK_MAP_SET_7, TASK_MAP_SET_8, TASK_MAP_SET_9
 import concurrent.futures
 from tqdm import tqdm
 from termcolor import cprint
@@ -140,7 +140,7 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
     return prompt
 
 
-def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model, results=None):
+def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model, oe_eval_results=None):
     prompt = read_prompt("prompts/debug_task.md")
 
     # # olmo-eval results query -G olmo-3-parity
@@ -152,7 +152,7 @@ def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model, result
     # print(olmo_eval_results)
     # raise
 
-    if results is None:
+    if oe_eval_results is None:
         try:
             # oe-eval-internal
             if parity_model == "allenai/Olmo-3-1025-7B":
@@ -242,7 +242,7 @@ def _migrate_and_return(args):
             oe_eval_task_names = oe_eval_task_names, 
             new_task_names = new_task_names,
             parity_model = parity_model,
-            results = results,
+            oe_eval_results = results,
         )
 
     rollout_dir = execute_task(prompt)
