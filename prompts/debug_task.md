@@ -35,7 +35,13 @@ olmo-eval beaker launch \
     -c h100 -p urgent -B ai2/oe-base --inspect --store -y \
     -g olmo-3-parity-apr5 \
     -w ai2/olmo-eval-debug \
-    --gpus 1 \
+    -o provider.kwargs.timeout=300 \
+    -o provider.num_instances=1 \
+    -o auxiliary_providers.wg_judge.kind=vllm_server \
+    -o auxiliary_providers.wg_judge.model=allenai/wildguard \
+    -o auxiliary_providers.wg_judge.num_instances=1 \
+    -o scoring_concurrency=4 \
+    --gpus 2 \
     {NEW_TASK_STR}
 ```
 

@@ -1739,3 +1739,23 @@ TASK_MAP_SET_8 = [
         "parity_model": "allenai/OLMo-2-0425-1B"
     },
 ]
+
+TASK_MAP_SET_9 = [
+    {
+        "results": """\
+{
+    "harmbench":
+    {
+        "inverted_functional_category_asr_lower": {
+            "contextual": 0.485
+        }
+    }
+}
+
+(you only need to ensure parity with this contextual subtask result)
+""",
+        "old_tasks": ["harmbench:wildguard_reasoning_answer"],
+        "new_tasks": ["harmbench:wg_judge_thinking"],
+        "parity_model": "swiss-ai/Apertus-8B-Instruct-2509"
+    }
+]

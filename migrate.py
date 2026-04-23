@@ -24,7 +24,11 @@ DEFAULT_PARITY_MODEL_ALIAS = "allenai/Olmo-3-1025-7B"
 # TASK_MAP = TASK_MAP_SET_5
 # TASK_MAP = TASK_MAP_SET_6 # all tasks!
 # TASK_MAP = TASK_MAP_SET_7 # code exec tasks
-TASK_MAP = TASK_MAP_SET_8 # tasks without parity (excl. hellaswag:rc:olmo3base)
+# TASK_MAP = TASK_MAP_SET_8 # tasks without parity (excl. hellaswag:rc:olmo3base)
+TASK_MAP = TASK_MAP_SET_9 # maliam safety tasks
+
+# MAX_WORKERS = 8
+MAX_WORKERS = 2
 
 
 def get_olmo_eval_tasks():
@@ -136,7 +140,7 @@ def create_migrate_prompt(oe_eval_task_names, new_task_names, example_query_str)
     return prompt
 
 
-def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model):
+def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model, results=None):
     prompt = read_prompt("prompts/debug_task.md")
 
     # # olmo-eval results query -G olmo-3-parity
@@ -148,26 +152,27 @@ def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model):
     # print(olmo_eval_results)
     # raise
 
-    try:
-        # oe-eval-internal
-        if parity_model == "allenai/Olmo-3-1025-7B":
-            # olmo-cookbook-eval results -d olmo3-paper-main -t winogrande:rc::xlarge -m Olmo-3-1025-7B:main
-            oe_eval_results = get_cookbook_results(
-                dashboard="olmo3-paper-main",
-                tasks=oe_eval_task_names,
-                models=["Olmo-3-1025-7B:main"],
-            )
-        elif parity_model == "allenai/OLMo-2-0425-1B":
-            # olmo-cookbook-eval results -d olmo-3-baseline -t mmlu:rc -m OLMo-2-0425-1B --skip-on-fail
-            oe_eval_results = get_cookbook_results(
-                dashboard="olmo-3-baseline",
-                tasks=oe_eval_task_names,
-                models=["OLMo-2-0425-1B"],
-            )
-        else:
-            raise ValueError(parity_model)
-    except json.decoder.JSONDecodeError as e:
-        raise RuntimeError(f'Task failed to pull from cookbook: {oe_eval_task_names}')
+    if results is None:
+        try:
+            # oe-eval-internal
+            if parity_model == "allenai/Olmo-3-1025-7B":
+                # olmo-cookbook-eval results -d olmo3-paper-main -t winogrande:rc::xlarge -m Olmo-3-1025-7B:main
+                oe_eval_results = get_cookbook_results(
+                    dashboard="olmo3-paper-main",
+                    tasks=oe_eval_task_names,
+                    models=["Olmo-3-1025-7B:main"],
+                )
+            elif parity_model == "allenai/OLMo-2-0425-1B":
+                # olmo-cookbook-eval results -d olmo-3-baseline -t mmlu:rc -m OLMo-2-0425-1B --skip-on-fail
+                oe_eval_results = get_cookbook_results(
+                    dashboard="olmo-3-baseline",
+                    tasks=oe_eval_task_names,
+                    models=["OLMo-2-0425-1B"],
+                )
+            else:
+                raise ValueError(parity_model)
+        except json.decoder.JSONDecodeError as e:
+            raise RuntimeError(f'Task failed to pull from cookbook: {oe_eval_task_names}')
 
     cprint(f"{oe_eval_task_names} -> " + str(oe_eval_results), "green")
 
@@ -209,7 +214,12 @@ def execute_task(prompt):
 
 
 def _migrate_and_return(args):
-    oe_eval_task_names, new_task_names, parity_model, example_queries_df = args
+    entry, example_queries_df = args
+
+    oe_eval_task_names = entry["old_tasks"]
+    new_task_names = entry["new_tasks"]
+    parity_model = entry.get("parity_model", DEFAULT_PARITY_MODEL_ALIAS)
+    results = entry.get("results", None) # optionally use the results directly
 
     if MODE == "implement":
         example_query_str = ""
@@ -229,9 +239,10 @@ def _migrate_and_return(args):
     
     elif MODE == "debug":
         prompt = create_debug_prompt(
-            oe_eval_task_names, 
-            new_task_names,
-            parity_model
+            oe_eval_task_names = oe_eval_task_names, 
+            new_task_names = new_task_names,
+            parity_model = parity_model,
+            results = results,
         )
 
     rollout_dir = execute_task(prompt)
@@ -250,10 +261,10 @@ def main():
     df = load_example_queries()
 
     task_pairs = [
-        (entry["old_tasks"], entry["new_tasks"], entry.get("parity_model", DEFAULT_PARITY_MODEL_ALIAS), df.copy()) for entry in task_map
+        (entry, df.copy()) for entry in task_map
     ]
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
         results = list(
             tqdm(
                 executor.map(_migrate_and_return, task_pairs),
