@@ -187,7 +187,7 @@ def create_debug_prompt(oe_eval_task_names, new_task_names, parity_model, oe_eva
         .replace("{OE_EVAL_TASK_NAME}", ", ".join(oe_eval_task_names))
         .replace("{OE_EVAL_RESULTS}", str(oe_eval_results))
         .replace("{NEW_TASK_STR}", new_task_str)
-        .replace("{MODEL_ALIAS}", DEFAULT_PARITY_MODEL_ALIAS)
+        .replace("{MODEL_ALIAS}", parity_model)
     )
 
     cprint(prompt, "blue")
